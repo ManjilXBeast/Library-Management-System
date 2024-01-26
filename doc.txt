@@ -1,0 +1,170 @@
+Book Class Documentation
+
+The Book class represents a book within a library management system. It implements the Serializable interface to facilitate object serialization. Each book instance is characterized by an ID, title, author, and availability status.
+
+Attributes:
+
+int id: Unique identifier for the book.
+String title: The title of the book.
+String author: The author of the book.
+boolean available: The availability status of the book.
+Constructors:
+
+public Book(int id, String title, String author, boolean available): Constructs a book with a specified ID, title, author, and availability status.
+public Book(String title, String author, boolean available): Constructs a book without a predefined ID, providing the title, author, and availability status.
+The Book class is designed to store and manage information about books, making it suitable for integration into library management systems.
+
+BookAddMsg Class Documentation
+
+The BookAddMsg class is part of the library management system and serves as a message wrapper for adding a new book. It implements the Serializable interface to enable object serialization. The class contains a single attribute:
+
+public Book book: An instance of the Book class representing the book to be added.
+Constructor:
+
+BookAddMsg(Book e): Constructs a new BookAddMsg object with the provided book instance.
+The primary purpose of this class is to encapsulate a Book object within a message, allowing for easier communication and handling of book addition requests in the library management system.
+
+
+BookListRequest Class Documentation
+
+The BookListRequest class is a simple message class within the library management system, implementing the Serializable interface for object serialization. It does not have any additional attributes or methods beyond the default ones provided by the Serializable interface.
+
+This class serves as a request message indicating a client's interest in obtaining a list of books. When instances of this class are serialized and sent to the server, they signal the server to respond with a list of available books.
+
+The BookListRequest class is designed for communication purposes, specifically for initiating book list retrieval in the library management system.
+
+
+
+BookListResponse Class Documentation
+
+The BookListResponse class is a message class in the library management system, designed to represent a response containing a list of books. It implements the Serializable interface for object serialization. The class contains a single attribute:
+
+final List<Book> books: A list of Book objects representing the available books.
+Constructor:
+
+public BookListResponse(List<Book> books): Constructs a new BookListResponse object with the provided list of books.
+This class is used by the server to respond to a BookListRequest. When clients request a list of books, the server encapsulates the list within a BookListResponse object, serializes it, and sends it back to the requesting client.
+
+The BookListResponse class plays a crucial role in the communication flow of the library management system, facilitating the retrieval of book lists.
+
+ClientGui Class Documentation
+
+The ClientGui class is responsible for managing the graphical user interface (GUI) of the client in the library management system. It interacts with a ClientSock object for communication with the server. Below is the documentation for the provided class:
+
+Attributes:
+
+ClientSock sock: An instance of the ClientSock class for handling socket communication.
+JPanel bookList: A panel to display the list of books in a grid layout.
+Constructor:
+
+public ClientGui(ClientSock sock): Constructs a new ClientGui object with the specified ClientSock instance.
+Methods:
+
+void show(): Displays the main GUI window, including input fields for adding books and buttons for interaction.
+void setBooks(List<Book> books): Updates the book list displayed in the GUI based on the provided list of books.
+void listen(): Listens for server messages in an infinite loop, updating the GUI based on received messages.
+The GUI includes input fields for book details (title, author, availability) and buttons for adding a book and requesting a list of books from the server. The listen method continuously listens for messages from the server, updating the GUI accordingly.
+
+The class utilizes Java's Swing library for GUI components and supports dynamic updating of the book list in response to server messages.
+
+ClientHandler Class Documentation
+
+The ClientHandler class represents a thread responsible for handling communication with an individual client in the library management system. It extends the Thread class, allowing concurrent processing of multiple clients. Below is the documentation for the provided class:
+
+Attributes:
+
+ServerData db: An instance of the ServerData class for managing interactions with the database.
+Socket clientSocket: The socket associated with the client connection.
+ObjectInputStream inputStream: Input stream for receiving objects from the client.
+ObjectOutputStream outputStream: Output stream for sending objects to the client.
+Constructor:
+
+public ClientHandler(Socket clientSocket, ServerData db): Constructs a new ClientHandler object with the specified client socket and database instance. It initializes input and output streams for communication.
+Methods:
+
+@Override void run(): Overrides the run method from the Thread class. Listens for client messages in an infinite loop, processes the messages, and interacts with the database accordingly.
+The ClientHandler class listens for incoming messages from the client, checks the type of message, and performs corresponding actions. If the message is an instance of BookAddMsg, it adds the provided book to the database. If it is a BookListRequest, it responds with a BookListResponse containing the list of books from the database.
+
+The class handles exceptions related to I/O operations and database interactions, providing informative messages in case of errors.
+
+ClientMain Class Documentation
+
+The ClientMain class serves as the entry point for the client-side application in the library management system. It initializes instances of ClientSock and ClientGui to manage socket communication and the graphical user interface. Below is the documentation for the provided class:
+
+Methods:
+
+public static void main(String[] args): The main method and entry point for the client-side application. It performs the following tasks:
+Instantiates a new ClientSock object for socket communication.
+Instantiates a new ClientGui object, passing the ClientSock instance.
+Displays the GUI using the show method.
+Initiates listening for server messages using the listen method.
+The ClientMain class allows clients to connect to the server, display the graphical user interface, and continuously listen for incoming messages from the server.
+
+
+
+ClientSock Class Documentation
+
+The ClientSock class handles the client-side socket communication in the library management system. It initializes a socket connection to the server and provides input and output streams for object serialization. Below is the documentation for the provided class:
+
+Attributes:
+
+Socket sock: The socket for communication with the server.
+ObjectInputStream inputStream: Input stream for receiving objects from the server.
+ObjectOutputStream outputStream: Output stream for sending objects to the server.
+Constructor:
+
+ClientSock(): Constructs a new ClientSock object, establishing a socket connection to the server and initializing input and output streams for communication.
+The ClientSock class enables communication between the client and the server through object serialization. It provides the necessary streams for sending and receiving objects.
+
+
+
+ServerData Class Documentation
+
+The ServerData class is responsible for managing interactions with the MySQL database in the library management system. It provides methods for adding books to the database and retrieving a list of books. Below is the documentation for the provided class:
+
+Attributes:
+
+Connection connection: The database connection object.
+Constructor:
+
+public ServerData(): Constructs a new ServerData object, establishing a connection to the MySQL database using JDBC.
+Methods:
+
+void addEvent(Book book) throws SQLException: Adds a new book to the database with the specified title, author, and availability.
+public List<Book> getBooks() throws SQLException: Retrieves a list of all books from the database.
+The ServerData class utilizes JDBC to interact with the MySQL database. The addEvent method inserts a new book into the database, while the getBooks method retrieves all books stored in the database.
+
+Note:
+
+The class assumes a MySQL database named library running on localhost with default credentials (root with no password). Adjust these details as needed based on your MySQL setup.
+
+
+ServerMain Class Documentation
+
+The ServerMain class serves as the entry point for the server-side application in the library management system. It initializes instances of ServerData and ServerSock to manage interactions with the MySQL database and handle client connections. Below is the documentation for the provided class:
+
+Methods:
+
+public static void main(String[] args): The main method and entry point for the server-side application. It performs the following tasks:
+Instantiates a new ServerData object for managing interactions with the MySQL database.
+Instantiates a new ServerSock object, passing the ServerData instance.
+Starts the server using the start method of the ServerSock object.
+The ServerMain class allows the server to establish a connection to the MySQL database and listen for incoming client connections.
+
+
+
+ServerSock Class Documentation
+
+The ServerSock class is responsible for handling server-side socket operations in the library management system. It initializes a ServerSocket for accepting client connections and creates a new ClientHandler thread for each connected client. Below is the documentation for the provided class:
+
+Attributes:
+
+ServerSocket serverSocket: The server socket for accepting client connections.
+ServerData db: An instance of the ServerData class for managing interactions with the MySQL database.
+Constructor:
+
+ServerSock(ServerData db): Constructs a new ServerSock object with the specified ServerData instance, initializing the server socket on port 4000.
+Methods:
+
+public void start(): Starts the server by continuously accepting client connections. For each connection, a new ClientHandler thread is created and started to handle communication with the client.
+The ServerSock class acts as the server's entry point, facilitating client connections and spawning separate threads (ClientHandler) to manage communication with individual clients. It integrates with the ServerData class for database interactions.
